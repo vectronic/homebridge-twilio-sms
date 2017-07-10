@@ -1,27 +1,27 @@
 {
-  "name": "homebridge-twilio",
+  "name": "homebridge-twilio-sms",
   "version": "0.0.1",
-  "description": "Homebridge plugin to make calls with a static message using Twilio api (paid service)",
+  "description": "Homebridge plugin to send SMSes with a static message using Twilio api (paid service)",
   "license": "ISC",
   "main": "index.js",
   "keywords": [
     "homebridge-plugin",
     "twilio",
     "homebridge",
-    "call"
+    "sms"
   ],
   "engines": {
     "homebridge": ">=0.2.0"
   },
-  "author": "nitaybz",
+  "author": "chazza",
   "repository": {
     "type": "git",
-    "url": "git://github.com/nitaybz/homebridge-twilio.git"
+    "url": "git://github.com/qata/homebridge-twilio-sms.git"
   },
    "bugs": {
-    "url": "https://github.com/nitaybz/homebridge-twilio/issues"
+    "url": "https://github.com/qata/homebridge-twilio-sms/issues"
   },
-   "homepage": "https://github.com/nitaybz/homebridge-twilio#readme",
+   "homepage": "https://github.com/qata/homebridge-twilio-sms#readme",
   "dependencies": {
     "twilio": "*"
   }
