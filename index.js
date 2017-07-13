@@ -16,6 +16,7 @@ function TwilioSwitch(log, config) {
     this.toNumbers = config["toNumbers"];
     this.twilioNumber = config["twilioNumber"];
     this.name = config["name"];
+    this.automaticallySwitchOff = config["automaticallySwitchOff"];
     this.client = require('twilio')(this.accountSid, this.authToken);
 }
 
@@ -57,7 +58,9 @@ TwilioSwitch.prototype = {
                     } else {
                         console.log("SMS succeeded!");
                     }
-                    self.switchService.setCharacteristic(Characteristic.On, false);
+                    if (self.automaticallySwitchOff === true) {
+                        self.switchService.setCharacteristic(Characteristic.On, false);
+                    }
                 });
             }
         }

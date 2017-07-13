@@ -18,11 +18,11 @@
     "type": "git",
     "url": "git://github.com/qata/homebridge-twilio-sms.git"
   },
-   "bugs": {
+  "bugs": {
     "url": "https://github.com/qata/homebridge-twilio-sms/issues"
   },
-   "homepage": "https://github.com/qata/homebridge-twilio-sms#readme",
+  "homepage": "https://github.com/qata/homebridge-twilio-sms#readme",
   "dependencies": {
-    "twilio": "*"
+    "twilio": "^3.4.0"
   }
 }

@@ -17,6 +17,7 @@
 		"authToken": "RVGH54CG45G5TG354GRT45T45G4G",
 		"messageBody": "The dehumidifier is full",
 		"toNumbers": ["+445287563029", "+445287563483"],
-		"twilioNumber": "+445287562349"
+		"twilioNumber": "+445287562349",
+		"automaticallySwitchOff": true
 	}]
 }
