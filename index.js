@@ -18,7 +18,7 @@ function TwilioSwitch(log, config) {
     this.name = config["name"];
     this.automaticallySwitchOff = config["automaticallySwitchOff"];
     this.client = require('twilio')(this.accountSid, this.authToken);
-}
+};
 
 TwilioSwitch.prototype = {
     getServices: function () {
@@ -43,46 +43,52 @@ TwilioSwitch.prototype = {
         callback(null, false);
     },
 
-    setPowerState: function(powerOn, callback) {
+    sendSms: function(toNumber) {
         var self = this;
-        if (powerOn) {
-            for (var i = 0; i < self.toNumbers.length; ++i) {
 
-                self.client.messages.create({
-                    to: self.toNumbers[i],
-                    from: self.twilioNumber,
-                    body: self.messageBody
-                }, function(err, message) {
-                    if (err) {
-                        self.log("SMS error (will retry):")
-                        self.log(err);
-                        setTimeout(function() {
-                            self.log("SMS retry...")
-                            self.client.messages.create({
-                                to: self.toNumbers[i],
-                                from: self.twilioNumber,
-                                body: self.messageBody
-                            }, function(err, message) {
-                                if (err) {
-                                    self.log("SMS error (giving up):")
-                                    self.log(err);
-                                }
-                                else {
-                                    console.log("SMS success: " + self.toNumbers[i] + " -> " + self.messageBody);
-                                }
-                                if (self.automaticallySwitchOff === true) {
-                                    self.switchService.setCharacteristic(Characteristic.On, false);
-                                }
-                            });
-                        }, 30000);
-                    }
-                    else {
-                        console.log("SMS success: " + self.toNumbers[i] + " -> " + self.messageBody);
+        self.client.messages.create({
+            to: toNumber,
+            from: self.twilioNumber,
+            body: self.messageBody
+        }, function(err, message) {
+            if (err) {
+                self.log("SMS error (will retry):");
+                self.log(err);
+                setTimeout(function() {
+                    self.log("SMS retry...");
+                    self.client.messages.create({
+                        to: toNumber,
+                        from: self.twilioNumber,
+                        body: self.messageBody
+                    }, function(err, message) {
+                        if (err) {
+                            self.log("SMS error (giving up):");
+                            self.log(err);
+                        }
+                        else {
+                            console.log("SMS success: " + toNumber + " -> " + self.messageBody);
+                        }
                         if (self.automaticallySwitchOff === true) {
                             self.switchService.setCharacteristic(Characteristic.On, false);
                         }
-                    }
-                });
+                    });
+                }, 30000);
+            }
+            else {
+                console.log("SMS success: " + toNumber + " -> " + self.messageBody);
+                if (self.automaticallySwitchOff === true) {
+                    self.switchService.setCharacteristic(Characteristic.On, false);
+                }
+            }
+        });
+    },
+
+    setPowerState: function(powerOn, callback) {
+        var self = this;
+
+        if (powerOn) {
+            for (var i = 0; i < self.toNumbers.length; ++i) {
+                self.sendSms(self.toNumbers[i]);
             }
         }
         callback();
