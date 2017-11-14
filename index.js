@@ -68,17 +68,14 @@ TwilioSwitch.prototype = {
                         else {
                             console.log("SMS success: " + toNumber + " -> " + self.messageBody);
                         }
-                        if (self.automaticallySwitchOff === true) {
-                            self.switchService.setCharacteristic(Characteristic.On, false);
-                        }
                     });
                 }, 30000);
             }
             else {
                 console.log("SMS success: " + toNumber + " -> " + self.messageBody);
-                if (self.automaticallySwitchOff === true) {
-                    self.switchService.setCharacteristic(Characteristic.On, false);
-                }
+            }
+            if (self.automaticallySwitchOff === true) {
+                self.switchService.setCharacteristic(Characteristic.On, false);
             }
         });
     },
