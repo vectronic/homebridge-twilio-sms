@@ -47,19 +47,40 @@ TwilioSwitch.prototype = {
         var self = this;
         if (powerOn) {
             for (var i = 0; i < self.toNumbers.length; ++i) {
+
                 self.client.messages.create({
                     to: self.toNumbers[i],
                     from: self.twilioNumber,
-                    body: self.messageBody,
+                    body: self.messageBody
                 }, function(err, message) {
                     if (err) {
-                        self.log("Could not make the SMS! - with Error:")
+                        self.log("SMS error (will retry):")
                         self.log(err);
-                    } else {
-                        console.log("SMS succeeded!");
+                        setTimeout(function() {
+                            self.log("SMS retry...")
+                            self.client.messages.create({
+                                to: self.toNumbers[i],
+                                from: self.twilioNumber,
+                                body: self.messageBody
+                            }, function(err, message) {
+                                if (err) {
+                                    self.log("SMS error (giving up):")
+                                    self.log(err);
+                                }
+                                else {
+                                    console.log("SMS success: " + self.toNumbers[i] + " -> " + self.messageBody);
+                                }
+                                if (self.automaticallySwitchOff === true) {
+                                    self.switchService.setCharacteristic(Characteristic.On, false);
+                                }
+                            });
+                        }, 30000);
                     }
-                    if (self.automaticallySwitchOff === true) {
-                        self.switchService.setCharacteristic(Characteristic.On, false);
+                    else {
+                        console.log("SMS success: " + self.toNumbers[i] + " -> " + self.messageBody);
+                        if (self.automaticallySwitchOff === true) {
+                            self.switchService.setCharacteristic(Characteristic.On, false);
+                        }
                     }
                 });
             }
