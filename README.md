@@ -24,14 +24,14 @@ Example `config.json` entry:
 
  ```
 "accessories": [
-        {
-            "accessory": "Twilio",
-            "name": "SMS Lottie",
-            "accountSid": "4352435f45f423456d652643dxre",
-            "authToken": "RVGH54CG45G5TG354GRT45T45G4G", 
-            "messageBody": "The dehumidifier is full",
-            "toNumbers": ["+445287563029", "+445287563483"],
-            "twilioNumber": "+445287562349"
-        }
-    ]
+  {
+    "accessory": "Twilio",
+    "name": "SMS Lottie",
+    "accountSid": "4352435f45f423456d652643dxre",
+    "authToken": "RVGH54CG45G5TG354GRT45T45G4G", 
+    "messageBody": "The dehumidifier is full",
+    "toNumbers": ["+445287563029", "+445287563483"],
+    "twilioNumber": "+445287562349"
+  }
+]
 ```
