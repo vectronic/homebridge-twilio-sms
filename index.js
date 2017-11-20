@@ -58,6 +58,10 @@ function TwilioSwitch(log, config) {
         .setCharacteristic(Characteristic.Model, "Send SMS Switch");
 
     this.services.Switch
+        .getCharacteristic(Characteristic.On)
+        .on("set", this.setPowerState.bind(this));
+
+    this.services.Switch
         .setCharacteristic(Characteristic.On, false);
 }
 
