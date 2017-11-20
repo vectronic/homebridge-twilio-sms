@@ -1,98 +1,117 @@
+"use strict";
+
 var Service, Characteristic;
 
-module.exports = function (homebridge) {
+
+module.exports = function(homebridge) {
+
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
+
     homebridge.registerAccessory("homebridge-twilio-sms", "Twilio", TwilioSwitch);
-}
+};
+
 
 function TwilioSwitch(log, config) {
     this.log = log;
 
-    // account info
     this.accountSid = config["accountSid"];
+    if (!this.accountSid) {
+        throw new Error("Missing accountSid!");
+    }
+
     this.authToken = config["authToken"];
+    if (!this.authToken) {
+        throw new Error("Missing authToken!");
+    }
+
     this.messageBody = config["messageBody"];
+    if (!this.messageBody) {
+        throw new Error("Missing messageBody!");
+    }
+
     this.toNumbers = config["toNumbers"];
+    if (!this.toNumbers) {
+        throw new Error("Missing toNumbers!");
+    }
+
     this.twilioNumber = config["twilioNumber"];
+    if (!this.twilioNumber) {
+        throw new Error("Missing twilioNumber!");
+    }
+
     this.name = config["name"];
-    this.automaticallySwitchOff = config["automaticallySwitchOff"];
-    this.client = require('twilio')(this.accountSid, this.authToken);
+    if (!this.name) {
+        throw new Error("Missing name!");
+    }
+
+    this.client = require("twilio")(this.accountSid, this.authToken);
+
+    this.services = {
+        AccessoryInformation: new Service.AccessoryInformation(),
+        Switch: new Service.Switch(this.name)
+    };
+
+    this.services.AccessoryInformation
+        .setCharacteristic(Characteristic.Manufacturer, "vectronic");
+    this.services.AccessoryInformation
+        .setCharacteristic(Characteristic.Model, "Send SMS Switch");
+
+    this.services.Switch
+        .setCharacteristic(Characteristic.On, false);
+}
+
+
+TwilioSwitch.prototype.sendSms = function (toNumber) {
+
+    var self = this;
+
+    self.client.messages.create({
+        to: toNumber,
+        from: self.twilioNumber,
+        body: self.messageBody
+    }, function(err, message) {
+        if (err) {
+            self.log("SMS error (will retry):");
+            self.log(err);
+            setTimeout(function() {
+                self.log("SMS retry...");
+                self.client.messages.create({
+                    to: toNumber,
+                    from: self.twilioNumber,
+                    body: self.messageBody + " (retry)"
+                }, function(err, message) {
+                    if (err) {
+                        self.log("SMS error (giving up):");
+                        self.log(err);
+                    }
+                    else {
+                        console.log("SMS success: " + toNumber + " -> " + self.messageBody);
+                    }
+                });
+            }, 30000);
+        }
+        else {
+            console.log("SMS success: " + toNumber + " -> " + self.messageBody);
+        }
+
+        // Automatically switch off
+        self.switchService.setCharacteristic(Characteristic.On, false);
+    });
 };
 
-TwilioSwitch.prototype = {
-    getServices: function () {
-        var informationService = new Service.AccessoryInformation();
 
-        informationService
-                .setCharacteristic(Characteristic.Manufacturer, "Twilio")
-                .setCharacteristic(Characteristic.Model, "Send an SMS")
-                .setCharacteristic(Characteristic.SerialNumber, "api");
+TwilioSwitch.prototype.setPowerState = function (powerOn, callback) {
 
-        this.switchService = new Service.Switch(this.name);
-        this.switchService
-                .getCharacteristic(Characteristic.On)
-                .on('get', this.getPowerState.bind(this))
-                .on('set', this.setPowerState.bind(this));
-
-
-        return [this.switchService, informationService];
-    },
-
-    getPowerState: function (callback) {
-        callback(null, false);
-    },
-
-    sendSms: function(toNumber) {
-        var self = this;
-
-        self.client.messages.create({
-            to: toNumber,
-            from: self.twilioNumber,
-            body: self.messageBody
-        }, function(err, message) {
-            if (err) {
-                self.log("SMS error (will retry):");
-                self.log(err);
-                setTimeout(function() {
-                    self.log("SMS retry...");
-                    self.client.messages.create({
-                        to: toNumber,
-                        from: self.twilioNumber,
-                        body: self.messageBody
-                    }, function(err, message) {
-                        if (err) {
-                            self.log("SMS error (giving up):");
-                            self.log(err);
-                        }
-                        else {
-                            console.log("SMS success: " + toNumber + " -> " + self.messageBody);
-                        }
-                    });
-                }, 30000);
-            }
-            else {
-                console.log("SMS success: " + toNumber + " -> " + self.messageBody);
-            }
-            if (self.automaticallySwitchOff === true) {
-                self.switchService.setCharacteristic(Characteristic.On, false);
-            }
-        });
-    },
-
-    setPowerState: function(powerOn, callback) {
-        var self = this;
-
-        if (powerOn) {
-            for (var i = 0; i < self.toNumbers.length; ++i) {
-                self.sendSms(self.toNumbers[i]);
-            }
+    if (powerOn) {
+        for (var i = 0; i < this.toNumbers.length; ++i) {
+            this.sendSms(this.toNumbers[i]);
         }
-        callback();
-    },
-
-    identify: function (callback) {
-        this.log("Identify requested!");
-        callback(); // success
     }
+    callback();
+};
+
+
+TwilioSwitch.prototype.getServices = function () {
+    return [this.services.AccessoryInformation, this.services.Switch];
 };

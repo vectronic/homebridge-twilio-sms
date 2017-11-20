@@ -14,15 +14,13 @@ After you set all of those, you can move forward to installing the plugin on hom
 
 # Installation
 
-1. Install homebridge using: npm install -g homebridge
-2. Install this plugin using: npm install -g homebridge-twilio-sms
-3. Update your configuration file. See sample-config.json in this repository for a sample. 
+1. Install homebridge using: `npm install -g homebridge`
+2. Install this plugin using: `npm install -g homebridge-twilio-sms`
+3. Update your `config.json` configuration file  
 
 # Configuration
 
-#### Please read carefully Twilio configurations first
-
-Config.json sample:
+Example `config.json` entry:
 
  ```
 "accessories": [
@@ -33,9 +31,7 @@ Config.json sample:
             "authToken": "RVGH54CG45G5TG354GRT45T45G4G", 
             "messageBody": "The dehumidifier is full",
             "toNumbers": ["+445287563029", "+445287563483"],
-            "twilioNumber": "+445287562349",
-            "automaticallySwitchOff": true
+            "twilioNumber": "+445287562349"
         }
     ]
-
 ```

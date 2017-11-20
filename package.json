@@ -13,15 +13,11 @@
   "engines": {
     "homebridge": ">=0.2.0"
   },
-  "author": "chazza",
+  "author": "vectronic",
   "repository": {
     "type": "git",
-    "url": "git://github.com/qata/homebridge-twilio-sms.git"
+    "url": "git://github.com/vectronic/homebridge-twilio-sms.git"
   },
-  "bugs": {
-    "url": "https://github.com/qata/homebridge-twilio-sms/issues"
-  },
-  "homepage": "https://github.com/qata/homebridge-twilio-sms#readme",
   "dependencies": {
     "twilio": "^3.4.0"
   }
