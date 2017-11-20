@@ -100,7 +100,8 @@ TwilioSwitch.prototype.sendSms = function (toNumber) {
         }
 
         // Automatically switch off
-        self.switchService.setCharacteristic(Characteristic.On, false);
+        self.services.Switch
+            .setCharacteristic(Characteristic.On, false);
     });
 };
 
