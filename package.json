@@ -1,6 +1,6 @@
 {
   "name": "homebridge-twilio-sms",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Homebridge plugin to send SMSes with a static message using Twilio api (paid service)",
   "license": "ISC",
   "main": "index.js",
