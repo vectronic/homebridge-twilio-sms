@@ -1,16 +1,11 @@
 # homebridge-twilio-sms
 
-Homebridge plugin to send SMSes with static text.
-This plugin uses Twilio api, which is a paid service at a fair price - [www.Twilio.com](https://www.twilio.com).
-
-Very good use for homekit alarms and sensor, you can set an automation to SMS your phone if your alarm is triggered, there is a water leak or smoke detected.
+Homebridge plugin to send SMSes with static text via Twilio.
 
 # Twilio configurations
-To use this plugin, you need to signup to their website and get a phone number from their service it will use you in the config as **twilioNumber**.
+To use this plugin, you need to signup to their website and get a phone number from their service to use as **twilioNumber**.
 
 the **accountSid** and **authToken** can be retrieved from [https://www.twilio.com/console/account/settings](https://www.twilio.com/console/account/settings)
-
-After you set all of those, you can move forward to installing the plugin on homebridge.
 
 # Installation
 
