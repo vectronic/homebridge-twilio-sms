@@ -1,5 +1,5 @@
 {
-  "name": "homebridge-twilio-sms",
+  "name": "@vectronic/homebridge-twilio-sms",
   "version": "0.1.0",
   "description": "Homebridge plugin to send SMSes with a static message using Twilio api (paid service)",
   "license": "ISC",
