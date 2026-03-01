@@ -1,0 +1,50 @@
+{
+  "pluginAlias": "TwilioSMS",
+  "pluginType": "platform",
+  "singular": true,
+  "headerDisplay": "Homebridge plugin to send SMS messages via Twilio when a switch is activated.",
+  "schema": {
+    "type": "object",
+    "required": ["name", "accountSid", "authToken", "messageBody", "toNumbers", "twilioNumber"],
+    "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string",
+        "default": "Twilio SMS",
+        "description": "The name of the switch accessory."
+      },
+      "accountSid": {
+        "title": "Account SID",
+        "type": "string",
+        "description": "Your Twilio Account SID from https://www.twilio.com/console/account/settings"
+      },
+      "authToken": {
+        "title": "Auth Token",
+        "type": "string",
+        "description": "Your Twilio Auth Token from https://www.twilio.com/console/account/settings"
+      },
+      "messageBody": {
+        "title": "Message Body",
+        "type": "string",
+        "description": "The static SMS message text to send."
+      },
+      "toNumbers": {
+        "title": "To Numbers",
+        "type": "array",
+        "items": {
+          "title": "Phone Number",
+          "type": "string",
+          "pattern": "^\\+[0-9]+$",
+          "description": "Phone number in E.164 format (e.g. +14155551234)"
+        },
+        "description": "List of phone numbers to send SMS to."
+      },
+      "twilioNumber": {
+        "title": "Twilio Phone Number",
+        "type": "string",
+        "pattern": "^\\+[0-9]+$",
+        "description": "Your Twilio phone number in E.164 format (e.g. +14155551234)"
+      }
+    }
+  }
+}

@@ -1,9 +1,15 @@
 {
   "name": "@vectronic/homebridge-twilio-sms",
-  "version": "0.1.0",
-  "description": "Homebridge plugin to send SMSes with a static message using Twilio api (paid service)",
+  "displayName": "Twilio SMS",
+  "version": "1.0.0",
+  "description": "Homebridge plugin to send SMSes with a static message using Twilio API (paid service)",
   "license": "ISC",
-  "main": "index.js",
+  "type": "module",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "config.schema.json"
+  ],
   "keywords": [
     "homebridge-plugin",
     "twilio",
@@ -11,7 +17,12 @@
     "sms"
   ],
   "engines": {
-    "homebridge": ">=0.2.0"
+    "node": "^20.18.0 || ^22.10.0",
+    "homebridge": "^1.8.0 || ^2.0.0-beta.0"
+  },
+  "scripts": {
+    "build": "rimraf ./dist && tsc",
+    "prepublishOnly": "npm run build"
   },
   "author": "vectronic",
   "repository": {
@@ -19,6 +30,12 @@
     "url": "git://github.com/vectronic/homebridge-twilio-sms.git"
   },
   "dependencies": {
-    "twilio": "^3.4.0"
+    "twilio": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "homebridge": "^2.0.0-beta.55",
+    "rimraf": "^6.0.0",
+    "typescript": "^5.7.0"
   }
 }
