@@ -1,26 +1,16 @@
 import type { CharacteristicValue, PlatformAccessory, Service } from 'homebridge';
 
-import Twilio from 'twilio';
-
 import type { TwilioSmsPlatform } from './platform.js';
 
 export class TwilioSmsAccessory {
 
   private readonly service: Service;
-  private readonly client: ReturnType<typeof Twilio>;
 
   constructor(
     private readonly platform: TwilioSmsPlatform,
     private readonly accessory: PlatformAccessory,
   ) {
-    const config = this.platform.config;
-
-    if (!config.accountSid || !config.authToken || !config.messageBody || !config.toNumbers || !config.twilioNumber) {
-      this.platform.log.error('Missing required Twilio configuration. Check accountSid, authToken, messageBody, toNumbers, twilioNumber.');
-      throw new Error('Missing required Twilio configuration');
-    }
-
-    this.client = Twilio(config.accountSid as string, config.authToken as string);
+    const context = this.accessory.context as { name: string; messageBody: string; toNumbers: string[] };
 
     this.accessory.getService(this.platform.api.hap.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.api.hap.Characteristic.Manufacturer, 'vectronic')
@@ -30,7 +20,7 @@ export class TwilioSmsAccessory {
     this.service = this.accessory.getService(this.platform.api.hap.Service.Switch)
       || this.accessory.addService(this.platform.api.hap.Service.Switch);
 
-    this.service.setCharacteristic(this.platform.api.hap.Characteristic.Name, config.name || 'Twilio SMS');
+    this.service.setCharacteristic(this.platform.api.hap.Characteristic.Name, context.name);
 
     this.service.getCharacteristic(this.platform.api.hap.Characteristic.On)
       .onGet(() => false)
@@ -38,16 +28,16 @@ export class TwilioSmsAccessory {
   }
 
   private async sendSms(toNumber: string, retry = false): Promise<void> {
-    const config = this.platform.config;
-    const body = retry ? `${config.messageBody} (retry)` : config.messageBody as string;
+    const context = this.accessory.context as { name: string; messageBody: string; toNumbers: string[] };
+    const body = retry ? `${context.messageBody} (retry)` : context.messageBody;
 
     try {
-      await this.client.messages.create({
+      await this.platform.twilioClient.messages.create({
         to: toNumber,
-        from: config.twilioNumber as string,
+        from: this.platform.config.twilioNumber as string,
         body,
       });
-      this.platform.log.info('SMS success: %s -> %s', toNumber, config.messageBody);
+      this.platform.log.info('SMS success: %s -> %s', toNumber, context.messageBody);
     } catch (error) {
       if (!retry) {
         this.platform.log.error('SMS error (will retry):', error);
@@ -61,8 +51,8 @@ export class TwilioSmsAccessory {
 
   private async setOn(value: CharacteristicValue): Promise<void> {
     if (value) {
-      const toNumbers = this.platform.config.toNumbers as string[];
-      for (const number of toNumbers) {
+      const context = this.accessory.context as { name: string; messageBody: string; toNumbers: string[] };
+      for (const number of context.toNumbers) {
         this.sendSms(number);
       }
 
