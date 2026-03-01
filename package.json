@@ -27,7 +27,7 @@
   "author": "vectronic",
   "repository": {
     "type": "git",
-    "url": "git://github.com/vectronic/homebridge-twilio-sms.git"
+    "url": "git+https://github.com/vectronic/homebridge-twilio-sms.git"
   },
   "dependencies": {
     "twilio": "^5.0.0"
