@@ -20,18 +20,30 @@ After you set all of those, you can move forward to installing the plugin on hom
 
 # Configuration
 
+Twilio credentials are configured at the platform level. Each accessory defines its own message and recipient phone numbers, allowing you to create multiple SMS switches for different alerts.
+
 Example `config.json` entry:
 
  ```json
 "platforms": [
   {
     "platform": "TwilioSMS",
-    "name": "SMS Lottie",
+    "name": "Twilio SMS",
     "accountSid": "4352435f45f423456d652643dxre",
     "authToken": "RVGH54CG45G5TG354GRT45T45G4G",
-    "messageBody": "The dehumidifier is full",
-    "toNumbers": ["+445287563029", "+445287563483"],
-    "twilioNumber": "+445287562349"
+    "twilioNumber": "+445287562349",
+    "accessories": [
+      {
+        "name": "Power Lost",
+        "messageBody": "Power loss detected",
+        "toNumbers": ["+445287563029", "+445287563483"]
+      },
+      {
+        "name": "Water Leak",
+        "messageBody": "Water leak detected!",
+        "toNumbers": ["+445287563029"]
+      }
+    ]
   }
 ]
 ```
